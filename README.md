@@ -133,6 +133,7 @@ Follow these steps in order to train, evaluate, and visualize the model.
 
 ### Step 1: Prepare Data & Config
 
+- Download the MIMIC-CXR dataset from physionet.org
 - Place your `train_split.csv`, `valid_split.csv`, and `model_test.csv` files in the root directory. Ensure they have the columns `image_path` and `report_text`.
 - Open `config.py` and verify all paths and hyperparameters (like `BATCH_SIZE` or `NUM_EPOCHS`) are correct.
 
@@ -198,7 +199,7 @@ This loads the best model and generates a report on the fly.
 
 ---
 
-## 📊 Sample Results
+## 📊 Results
 
 ```json
 {
