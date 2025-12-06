@@ -38,7 +38,7 @@ class XRayReportDataset(Dataset):
             self.report_data = pd.read_csv(csv_file)
             print(f"Loaded {len(self.report_data)} rows from {csv_file}")
         except FileNotFoundError:
-            print(f"🚨 Error: CSV file not found at {csv_file}")
+            print(f" Error: CSV file not found at {csv_file}")
             self.report_data = pd.DataFrame()
 
         self.tokenizer = tokenizer
@@ -62,14 +62,14 @@ class XRayReportDataset(Dataset):
 
         except IndexError:
             msg = (
-                f"🚨 Error: Index {idx} out of bounds "
+                f" Error: Index {idx} out of bounds "
                 f"for the dataset (size {len(self.report_data)})."
             )
             print(msg)
             return None
         except KeyError as e:
             msg = (
-                f"🚨 Error: Missing column in CSV: {e}. "
+                f" Error: Missing column in CSV: {e}. "
                 f"Check '{self.report_data.columns}'."
             )
             print(msg)
@@ -79,11 +79,11 @@ class XRayReportDataset(Dataset):
         try:
             img = Image.open(image_path).convert("RGB")
         except FileNotFoundError:
-            msg = f"⚠️ Warning: Image not found at {image_path}. Skipping sample {idx}."
+            msg = f" Warning: Image not found at {image_path}. Skipping sample {idx}."
             print(msg)
             return None
         except Exception as e:
-            print(f"🚨 Error loading image for sample {idx}: {e}")
+            print(f" Error loading image for sample {idx}: {e}")
             return None
 
         img = image_transform(img)
@@ -100,7 +100,7 @@ class XRayReportDataset(Dataset):
                 return_tensors="pt",
             )
         except Exception as e:
-            print(f"🚨 Error tokenizing text for sample {idx}: {e}")
+            print(f" Error tokenizing text for sample {idx}: {e}")
             return None
 
         input_ids = tokenized_output["input_ids"].squeeze()
@@ -157,12 +157,13 @@ if __name__ == "__main__":
                 batch_size = first_batch["input_ids"].shape[0]
                 print(f"Batch size retrieved: {batch_size}")
             else:
-                print("🚨 DataLoader retrieved an empty first batch.")
+                print(" DataLoader retrieved an empty first batch.")
 
         except StopIteration:
-            print("🚨 DataLoader returned no batches.")
+            print(" DataLoader returned no batches.")
         except Exception as e:
-            print(f"🚨 Error getting batch from DataLoader: {e}")
+            print(f" Error getting batch from DataLoader: {e}")
 
     else:
-        print(f"🚨 Dataset failed to load or is empty ({test_csv}).")
+
+        print(f" Dataset failed to load or is empty ({test_csv}).")
