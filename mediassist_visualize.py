@@ -27,7 +27,7 @@ class Visualizer:
         history_path = self.config.TRAINING_HISTORY_FILE
         
         if not os.path.exists(history_path):
-            print(f"--- ⚠️ Warning: Training history not found ---")
+            print(f"---  Warning: Training history not found ---")
             print(f"File not found: {history_path}")
             print("Run 'mediassist_train.py' to generate this file.")
             return
@@ -56,17 +56,17 @@ class Visualizer:
             plt.tight_layout()
             save_path = os.path.join(self.config.VISUALIZATIONS_DIR, 'training_curves.png')
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
-            print(f"✅ Training curves saved to {save_path}")
+            print(f" Training curves saved to {save_path}")
             plt.close()
         except Exception as e:
-            print(f"🚨 Error plotting training curves: {e}")
+            print(f" Error plotting training curves: {e}")
 
     
     def plot_metrics(self):
         metrics_path = self.config.METRICS_FILE
         
         if not os.path.exists(metrics_path):
-            print(f"--- ⚠️ Warning: Metrics file not found ---")
+            print(f"---  Warning: Metrics file not found ---")
             print(f"File not found: {metrics_path}")
             print("Run 'mediassist_calculate_metrics.py' to generate this file.")
             return
@@ -105,10 +105,10 @@ class Visualizer:
             plt.tight_layout()
             save_path = os.path.join(self.config.VISUALIZATIONS_DIR, 'metrics.png')
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
-            print(f"✅ Metrics plot saved to {save_path}")
+            print(f" Metrics plot saved to {save_path}")
             plt.close()
         except Exception as e:
-            print(f"🚨 Error plotting metrics: {e}")
+            print(f" Error plotting metrics: {e}")
     
     def create_all_visualizations(self):
         
@@ -118,7 +118,7 @@ class Visualizer:
         
         self.plot_metrics()
         
-        print("🎉 All visualizations created! 🎉")
+        print(" All visualizations created! ")
 
 def main():
     cfg = Config()
@@ -129,4 +129,5 @@ def main():
     print("Visualization complete!")
 
 if __name__ == "__main__":
+
     main()
