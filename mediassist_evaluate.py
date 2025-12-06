@@ -11,7 +11,7 @@ try:
     from mediassist_model import TienetReportGenerator
     from config import Config
 except ImportError as e:
-    print(f"🚨 Error importing modules: {e}")
+    print(f" Error importing modules: {e}")
     exit()
 
 def run_evaluation(cfg, test_csv_path, model_path, output_csv_path, device, batch_size=1):
@@ -35,7 +35,7 @@ def run_evaluation(cfg, test_csv_path, model_path, output_csv_path, device, batc
         else:
             END_TOKEN_ID = tokenizer.pad_token_id
     except Exception as e:
-        print(f"🚨 Error loading tokenizer: {e}")
+        print(f" Error loading tokenizer: {e}")
         return
 
     # 2. Load Model Architecture
@@ -51,20 +51,20 @@ def run_evaluation(cfg, test_csv_path, model_path, output_csv_path, device, batc
             freeze_epochs=0  # Not training, so no freezing needed
         ).to(device)
     except Exception as e:
-        print(f"🚨 Error initializing model architecture: {e}")
+        print(f" Error initializing model architecture: {e}")
         return
 
     # 3. Load Trained Weights
     print(f"Loading trained weights from: {model_path}")
     if not os.path.exists(model_path):
-        print(f"🚨 Error: Model weights file not found at '{model_path}'!")
+        print(f" Error: Model weights file not found at '{model_path}'!")
         return
     try:
         model.load_state_dict(torch.load(model_path, map_location=device))
         model.eval()
         print("Trained weights loaded.")
     except Exception as e:
-        print(f"🚨 Error loading model weights: {e}")
+        print(f" Error loading model weights: {e}")
         return
 
     # 4. Load Test Data Manifest
@@ -73,14 +73,14 @@ def run_evaluation(cfg, test_csv_path, model_path, output_csv_path, device, batc
     try:
         test_df = pd.read_csv(test_csv_path)
         if test_df.empty:
-            print(f"🚨 Error: Test CSV file '{test_csv_path}' is empty!")
+            print(f" Error: Test CSV file '{test_csv_path}' is empty!")
             return
         print(f"Found {len(test_df)} test samples.")
     except FileNotFoundError:
-        print(f"🚨 Error: Test CSV file not found at '{test_csv_path}'!")
+        print(f" Error: Test CSV file not found at '{test_csv_path}'!")
         return
     except Exception as e:
-        print(f"🚨 Error reading test CSV: {e}")
+        print(f" Error reading test CSV: {e}")
         return
 
     # 5. Generate Predictions
@@ -110,10 +110,10 @@ def run_evaluation(cfg, test_csv_path, model_path, output_csv_path, device, batc
                 )
 
         except FileNotFoundError:
-            print(f"⚠️ Warning: Image not found for ID {image_id}. Skipping.")
+            print(f" Warning: Image not found for ID {image_id}. Skipping.")
             generated_report_text = "IMAGE_NOT_FOUND"
         except Exception as e:
-            print(f"🚨 Error generating report for ID {image_id}: {e}")
+            print(f" Error generating report for ID {image_id}: {e}")
 
         results.append({
             'id': image_id,
@@ -128,7 +128,7 @@ def run_evaluation(cfg, test_csv_path, model_path, output_csv_path, device, batc
         results_df.to_csv(output_csv_path, index=False)
         print("Results saved successfully.")
     except Exception as e:
-        print(f"🚨 Error saving results CSV: {e}")
+        print(f" Error saving results CSV: {e}")
 
 
 # --- Main Execution Block ---
@@ -143,6 +143,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     current_device = torch.device(cfg.DEVICE)
-    print(f"Using device: {current_device} {'🚀' if str(current_device) == 'cuda' else '🐌'}")
+    print(f"Using device: {current_device} {'' if str(current_device) == 'cuda' else ''}")
+
 
     run_evaluation(cfg, args.test_csv, args.model, args.output_csv, current_device)
