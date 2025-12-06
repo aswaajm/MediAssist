@@ -13,7 +13,7 @@ try:
     from mediassist_model import TienetReportGenerator
     from config import Config
 except ImportError as e:
-    print(f"🚨 Error importing modules: {e}")
+    print(f" Error importing modules: {e}")
     exit()
 
 # --- Validation Function ---
@@ -64,14 +64,14 @@ def validate_model(model, loader, criterion, device, scaler=None, vocab_size=Non
 
             except RuntimeError as e:
                 if "out of memory" in str(e):
-                    print("\n🚨 CUDA OOM in validation!")
+                    print("\n CUDA OOM in validation!")
                     torch.cuda.empty_cache()
                     continue
                 else:
-                    print(f"\n🚨 Runtime error during validation: {e}")
+                    print(f"\n Runtime error during validation: {e}")
                     continue
             except Exception as e:
-                print(f"\n🚨 Error during validation: {e}")
+                print(f"\n Error during validation: {e}")
                 continue
 
     model.train()
@@ -88,7 +88,7 @@ if __name__ == '__main__':
     cfg = Config()
     
     device = torch.device(cfg.DEVICE)
-    print(f"Using device: {device} {'🚀' if str(device) == 'cuda' else '🐌'}")
+    print(f"Using device: {device} {'' if str(device) == 'cuda' else ''}")
     if str(device) == 'cuda':
         print(f"GPU Name: {torch.cuda.get_device_name(0)}")
         print(f"GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.2f} GB")
@@ -97,12 +97,12 @@ if __name__ == '__main__':
     print(f"  Training CSV: {cfg.TRAIN_CSV_FILE}")
     print(f"  Validation CSV: {cfg.VALID_CSV_FILE}")
     if not os.path.exists(cfg.TRAIN_CSV_FILE):
-        print(f"🚨 Error: Training CSV file not found at '{cfg.TRAIN_CSV_FILE}'!")
+        print(f" Error: Training CSV file not found at '{cfg.TRAIN_CSV_FILE}'!")
         exit()
     if not os.path.exists(cfg.VALID_CSV_FILE):
-        print(f"🚨 Error: Validation CSV file not found at '{cfg.VALID_CSV_FILE}'!")
+        print(f" Error: Validation CSV file not found at '{cfg.VALID_CSV_FILE}'!")
         exit()
-    print("  ✓ Data files found.")
+    print("   Data files found.")
 
     print("Loading tokenizer...")
     try:
@@ -111,7 +111,7 @@ if __name__ == '__main__':
         PAD_TOKEN_ID = tokenizer.pad_token_id
         print(f"Tokenizer loaded: {tokenizer.name_or_path} (Vocab size: {VOCAB_SIZE})")
     except Exception as e:
-        print(f"🚨 Error loading tokenizer: {e}")
+        print(f" Error loading tokenizer: {e}")
         exit()
 
     # Setup Dataset and DataLoader
@@ -125,7 +125,7 @@ if __name__ == '__main__':
             max_length=cfg.MAX_TEXT_LENGTH
         )
         if len(train_dataset) == 0:
-            print(f"🚨 Error: Training dataset '{cfg.TRAIN_CSV_FILE}' is empty!")
+            print(f" Error: Training dataset '{cfg.TRAIN_CSV_FILE}' is empty!")
             exit()
         
         train_loader = DataLoader(
@@ -135,7 +135,7 @@ if __name__ == '__main__':
         )
         print(f"Training dataset loaded: {len(train_dataset)} samples.")
         if len(train_loader) == 0:
-            print("🚨 Error: Training DataLoader created zero batches.")
+            print(" Error: Training DataLoader created zero batches.")
             exit()
 
         valid_dataset = XRayReportDataset(
@@ -144,7 +144,7 @@ if __name__ == '__main__':
             max_length=cfg.MAX_TEXT_LENGTH
         )
         if len(valid_dataset) == 0:
-            print(f"🚨 Error: Validation dataset '{cfg.VALID_CSV_FILE}' is empty!")
+            print(f" Error: Validation dataset '{cfg.VALID_CSV_FILE}' is empty!")
             valid_loader = None
         else:
             valid_loader = DataLoader(
@@ -157,7 +157,7 @@ if __name__ == '__main__':
                 valid_loader = None
 
     except Exception as e:
-        print(f"🚨 Error setting up dataset/dataloader: {e}")
+        print(f" Error setting up dataset/dataloader: {e}")
         exit()
 
     # --- Initialize Model ---
@@ -181,7 +181,7 @@ if __name__ == '__main__':
         print(f"Trainable parameters: {sum(p.numel() for p in model.parameters() if p.requires_grad):,}")
         
     except Exception as e:
-        print(f"🚨 Error initializing model: {e}")
+        print(f" Error initializing model: {e}")
         exit()
 
     criterion = nn.CrossEntropyLoss(ignore_index=PAD_TOKEN_ID)
@@ -205,7 +205,7 @@ if __name__ == '__main__':
         print(f"Optimizer: AdamW (Image LR: {cfg.LR_IMAGE_ENCODER}, Text/Other LR: {cfg.LEARNING_RATE})")
 
     except AttributeError:
-         print("🚨 Error: Could not find 'model.image_encoder'. Using single learning rate.")
+         print(" Error: Could not find 'model.image_encoder'. Using single learning rate.")
          optimizer = optim.AdamW(model.parameters(), lr=cfg.LEARNING_RATE)
          print(f"Optimizer: AdamW (Learning Rate: {cfg.LEARNING_RATE})")
    
@@ -218,7 +218,7 @@ if __name__ == '__main__':
         print("Mixed precision training (FP16) enabled.")
 
     print("-" * 50)
-    print("Starting training... 🏋️‍♀️")
+    print("Starting training... ")
     print(f"Config => Epochs: {cfg.NUM_EPOCHS}, Batch Size: {cfg.BATCH_SIZE}")
     print(f"Mixed Precision: {cfg.USE_MIXED_PRECISION}, Gradient Checkpointing: {cfg.USE_GRADIENT_CHECKPOINTING}")
     print("-" * 50)
@@ -264,7 +264,7 @@ if __name__ == '__main__':
                         loss = criterion(logits.reshape(-1, VOCAB_SIZE), tgt_expected_output.reshape(-1))
 
                     if torch.isnan(loss):
-                        print(f"\n🚨 NaN loss detected during training batch {i+1}! Skipping update.")
+                        print(f"\n NaN loss detected during training batch {i+1}! Skipping update.")
                         optimizer.zero_grad()
                         continue
 
@@ -278,7 +278,7 @@ if __name__ == '__main__':
                     loss = criterion(logits.reshape(-1, VOCAB_SIZE), tgt_expected_output.reshape(-1))
 
                     if torch.isnan(loss):
-                        print(f"\n🚨 NaN loss detected during training batch {i+1}! Skipping update.")
+                        print(f"\n NaN loss detected during training batch {i+1}! Skipping update.")
                         optimizer.zero_grad()
                         continue
 
@@ -288,18 +288,18 @@ if __name__ == '__main__':
 
             except RuntimeError as e:
                 if "out of memory" in str(e):
-                    print(f"\n🚨 CUDA out of memory during training batch {i+1}!")
+                    print(f"\n CUDA out of memory during training batch {i+1}!")
                     torch.cuda.empty_cache()
                     if scaler is not None:
                         scaler.update() # Must update scaler even on OOM
                     continue
                 else:
-                    print(f"\n🚨 Runtime error during training: {e}")
+                    print(f"\n Runtime error during training: {e}")
                     if scaler is not None:
                         scaler.update()
                     continue
             except Exception as e:
-                print(f"\n🚨 Unexpected error during training: {e}")
+                print(f"\n Unexpected error during training: {e}")
                 if scaler is not None:
                     scaler.update()
                 continue
@@ -321,7 +321,7 @@ if __name__ == '__main__':
                 )
 
         avg_train_loss = epoch_train_loss / train_batches if train_batches > 0 else 0
-        print(f"\n✅ End of Epoch {epoch+1} | Average Training Loss: {avg_train_loss:.4f}")
+        print(f"\n End of Epoch {epoch+1} | Average Training Loss: {avg_train_loss:.4f}")
 
         # Run Validation
         avg_val_loss = validate_model(model, valid_loader, criterion, device, scaler, VOCAB_SIZE, PAD_TOKEN_ID)
@@ -335,7 +335,7 @@ if __name__ == '__main__':
 
             # Save Best Model
             if avg_val_loss < best_val_loss:
-                print(f"   ✨ Validation Loss improved ({best_val_loss:.4f} -> {avg_val_loss:.4f}). Saving best model...")
+                print(f"    Validation Loss improved ({best_val_loss:.4f} -> {avg_val_loss:.4f}). Saving best model...")
                 best_val_loss = avg_val_loss
                 epochs_without_improvement = 0
                 best_model_path = cfg.BEST_MODEL_PATH 
@@ -343,14 +343,14 @@ if __name__ == '__main__':
                     torch.save(model.state_dict(), best_model_path)
                     print(f"      Best model saved to '{best_model_path}'")
                 except Exception as e:
-                    print(f"      🚨 Error saving best model: {e}")
+                    print(f"       Error saving best model: {e}")
             else:
                 epochs_without_improvement += 1
                 print(f"   Validation Loss did not improve from {best_val_loss:.4f} ({epochs_without_improvement} epochs)")
 
         print("-" * 50)
 
-    print("🎉 Training finished! 🎉")
+    print(" Training finished! ")
     if best_val_loss != float('inf'):
         print(f"Best validation loss achieved: {best_val_loss:.4f}")
         print(f"Best model state saved to '{cfg.BEST_MODEL_PATH}'")
@@ -364,4 +364,5 @@ if __name__ == '__main__':
             json.dump(training_history, f, indent=4)
         print(f"Training history saved to '{history_path}'")
     except Exception as e:
-        print(f"🚨 Error saving training history: {e}")
+
+        print(f" Error saving training history: {e}")
