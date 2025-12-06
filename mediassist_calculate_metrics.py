@@ -20,19 +20,19 @@ def calculate_metrics(predictions_csv_path):
 
     print(f"Loading predictions from: {predictions_csv_path}")
     if not os.path.exists(predictions_csv_path):
-        print(f"🚨 Error: Predictions file not found at '{predictions_csv_path}'!")
+        print(f" Error: Predictions file not found at '{predictions_csv_path}'!")
         return
 
     try:
         df = pd.read_csv(predictions_csv_path)
         if df.empty:
-            print(f"🚨 Error: Predictions file '{predictions_csv_path}' is empty!")
+            print(f" Error: Predictions file '{predictions_csv_path}' is empty!")
             return
         if 'ground_truth' not in df.columns or 'generated' not in df.columns:
-            print("🚨 Error: CSV must contain 'ground_truth' and 'generated' columns.")
+            print(" Error: CSV must contain 'ground_truth' and 'generated' columns.")
             return
     except Exception as e:
-        print(f"🚨 Error reading CSV: {e}")
+        print(f" Error reading CSV: {e}")
         return
 
     # --- Preprocessing & Tokenization ---
@@ -51,7 +51,7 @@ def calculate_metrics(predictions_csv_path):
         candidates.append(cand_tokens)
 
     if not candidates or not references:
-        print("🚨 Error: No valid reference/candidate pairs found after tokenization.")
+        print(" Error: No valid reference/candidate pairs found after tokenization.")
         return
 
     # --- Calculate BLEU Scores ---
@@ -69,7 +69,7 @@ def calculate_metrics(predictions_csv_path):
         print(f"  BLEU-3: {bleu3:.4f}")
         print(f"  BLEU-4: {bleu4:.4f}")
     except Exception as e:
-        print(f"🚨 Error calculating BLEU: {e}")
+        print(f" Error calculating BLEU: {e}")
 
     # --- Calculate ROUGE Scores ---
     print("\nCalculating ROUGE scores...")
@@ -95,7 +95,7 @@ def calculate_metrics(predictions_csv_path):
             total_rougeL_f += scores['rougeL'].fmeasure
             valid_rouge_scores += 1
         except Exception as e:
-            print(f"🚨 Error calculating ROUGE for row {index}: {e}")
+            print(f" Error calculating ROUGE for row {index}: {e}")
 
     if valid_rouge_scores > 0:
         avg_rouge1_f = total_rouge1_f / valid_rouge_scores
@@ -126,9 +126,9 @@ def calculate_metrics(predictions_csv_path):
 
         with open(metrics_path, 'w') as f:
             json.dump(metrics, f, indent=4)
-        print(f"\n✅ Metrics saved to '{metrics_path}'")
+        print(f"\n Metrics saved to '{metrics_path}'")
     except Exception as e:
-        print(f"🚨 Error saving metrics to JSON: {e}")
+        print(f" Error saving metrics to JSON: {e}")
     # ---------------
 
 # --- Main Execution Block ---
@@ -140,5 +140,6 @@ if __name__ == "__main__":
     parser.add_argument("--predictions_csv", default=cfg.PREDICTIONS_CSV_PATH, help="Path to the CSV file containing 'ground_truth' and 'generated' columns.")
 
     args = parser.parse_args()
+
 
     calculate_metrics(args.predictions_csv)
