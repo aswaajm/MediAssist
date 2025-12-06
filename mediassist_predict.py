@@ -9,7 +9,7 @@ try:
     from mediassist_model import TienetReportGenerator
     from config import Config
 except ImportError:
-    print("🚨 Error: Make sure 'mediassist_dataset.py', 'mediassist_model.py', and 'config.py' are in the same folder.")
+    print(" Error: Make sure 'mediassist_dataset.py', 'mediassist_model.py', and 'config.py' are in the same folder.")
     exit()
 
 
@@ -34,7 +34,7 @@ def predict_report(cfg, image_path, model_path, device):
             END_TOKEN_ID = tokenizer.pad_token_id
         print(f"Tokenizer loaded: {cfg.TOKENIZER_NAME}")
     except Exception as e:
-        print(f"🚨 Error loading tokenizer: {e}")
+        print(f" Error loading tokenizer: {e}")
         return None
 
     # 2. Load Model Architecture
@@ -51,20 +51,20 @@ def predict_report(cfg, image_path, model_path, device):
         ).to(device)
         print("Model architecture initialized.")
     except Exception as e:
-        print(f"🚨 Error initializing model architecture: {e}")
+        print(f" Error initializing model architecture: {e}")
         return None
 
     # 3. Load Trained Weights
     print(f"Loading trained weights from: {model_path}")
     if not os.path.exists(model_path):
-        print(f"🚨 Error: Model weights file not found at '{model_path}'!")
+        print(f" Error: Model weights file not found at '{model_path}'!")
         return None
     try:
         model.load_state_dict(torch.load(model_path, map_location=device))
         model.eval()
         print("Trained weights loaded successfully.")
     except Exception as e:
-        print(f"🚨 Error loading model weights: {e}")
+        print(f" Error loading model weights: {e}")
         return None
 
     # 4. Load and Preprocess Image
@@ -74,10 +74,10 @@ def predict_report(cfg, image_path, model_path, device):
         img = image_transform(img_pil).unsqueeze(0).to(device)
         print("Image preprocessed.")
     except FileNotFoundError:
-        print(f"🚨 Error: Image file not found at '{image_path}'")
+        print(f" Error: Image file not found at '{image_path}'")
         return None
     except Exception as e:
-        print(f"🚨 Error processing image: {e}")
+        print(f" Error processing image: {e}")
         return None
 
     # 5. Generate Report
@@ -96,7 +96,7 @@ def predict_report(cfg, image_path, model_path, device):
         return generated_text
 
     except Exception as e:
-        print(f"🚨 Error during report generation: {e}")
+        print(f" Error during report generation: {e}")
         return None
 
 
@@ -119,4 +119,5 @@ if __name__ == "__main__":
         print(generated_report_result)
         print("------------------------")
     else:
-        print("\n🚨 Report generation failed or returned None.")
+
+        print("\n Report generation failed or returned None.")
